@@ -1,5 +1,5 @@
 """
-API layer for the Project Alpha backend.
+API layer for the AI Interview Coach backend.
 
 This package contains:
 - FastAPI routers grouped by domain.

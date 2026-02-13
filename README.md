@@ -1,135 +1,247 @@
-# Project Alpha
+# AI Interview Coach
 
-Welcome to **Project Alpha**! This document provides a detailed overview of the project structure, its components, and how everything works together. This guide is designed to help newcomers quickly understand the project.
+Welcome to **AI Interview Coach**! This is a full-stack application that provides AI-powered interview practice. The application is designed as a **trial model** - no signup or authentication required.
 
 ---
 
 ## **Project Overview**
 
-Project Alpha is a full-stack application designed with the following architecture:
+AI Interview Coach is a full-stack application with the following architecture:
 
-- **Frontend**: Built with React (or Next.js if migrated), it provides the user interface for the application.
-- **Backend**: Powered by FastAPI, it serves as the API gateway and handles business logic.
-- **Modules**:
-  - **Interview Module**: Manages interview-related features and integrates with the Groq API.
-  - **Auth Module**: Handles user authentication and authorization.
-  - **Analytics Module**: Processes and provides metrics for the application.
-- **Database**: PostgreSQL is used to store user data and other application-related information.
-- **External Services**:
-  - **Groq API**: Used for interview-related data.
-  - **Metrics Engine**: Collects and analyzes analytics data.
+- **Frontend**: Built with React, provides the user interface for interview practice.
+- **Backend**: Powered by FastAPI, serves as the API gateway and handles interview logic.
+- **AI Integration**: Uses Groq API (Llama 3.1 8B Instant) for generating questions and evaluating answers.
+- **No Database**: Trial model - no user accounts or data persistence required.
 
 ---
 
 ## **Folder Structure**
 
-Here’s a breakdown of the project structure:
-
 ### **Frontend**
-Located in the `frontend/` folder, this is the user-facing part of the application.
-
-- **`src/`**: Contains the main source code for the frontend.
-  - **`components/`**: Reusable UI components like `InterviewSession`, `Results`, etc.
-  - **`services/`**: Handles API calls to the backend.
-- **`public/`**: Static files like `index.html` and `manifest.json`.
-- **`package.json`**: Lists frontend dependencies.
-- **`.env.example`**: Example environment variables for the frontend.
+Located in the `frontend/` folder:
+- React components and UI
+- API service layer for backend communication
 
 ### **Backend**
-Located in the `backend/` folder, this is the server-side logic of the application.
+Located in the root `app/` folder following clean architecture:
 
-- **`main.py`**: The entry point for the backend application.
-- **`Dockerfile`**: Instructions for building the backend Docker image.
-- **`requirements.txt`**: Lists Python dependencies for the backend.
-- **`modules/`**: Organized by features:
-  - **`interview/`**: Handles interview-related logic.
-    - **`routes.py`**: Defines API endpoints.
-    - **`services.py`**: Contains business logic.
-  - **`auth/`**: (To be added) Manages user authentication.
-  - **`analytics/`**: (To be added) Processes metrics and analytics.
-- **`config/`**: Stores configuration files.
-- **`infrastructure/db/`**: Handles database models and repositories.
+- **`app/domain/interview/`**: Domain entities and business logic
+- **`app/application/interview/`**: Use cases, DTOs, and interfaces
+- **`app/infrastructure/ai/`**: Groq AI service implementation
+- **`app/api/routes/interview.py`**: FastAPI routes for interview endpoints
+- **`app/shared/`**: Cross-cutting utilities (errors, Result type)
 
-### **Shared**
-Located in the `shared/` folder, this contains code shared across the project.
-
-- **`errors.py`**: Defines custom error classes.
-- **`result.py`**: Utility for handling operation results.
-
-### **Tests**
-Located in the `tests/` folder, this contains test cases for the application.
-
-- **`domain/`**: Tests for domain logic, such as `test_user_entity.py`.
-
-### **Docs**
-Located in the `docs/` folder, this contains documentation for the project.
-
-- **`architecture.md`**: Explains the system architecture.
+### **Main Entry Point**
+- **`main.py`**: FastAPI application factory and startup
 
 ---
 
 ## **How to Run the Project**
 
-### **1. Prerequisites**
-- Install **Docker** and **Docker Compose**.
-- Install **Node.js** and **npm**.
-- Install **Python 3.9+**.
+### **Option 1: Integrated Deployment (Recommended for Production)**
 
-### **2. Setup**
+Deploy frontend and backend together in a single container:
 
-#### **Frontend**
-1. Navigate to the `frontend/` folder.
-2. Install dependencies:
+1. **Set up environment variables**:
    ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm start
+   cp .env.example .env
+   # Edit .env and add your GROQ_API_KEY
    ```
 
-#### **Backend**
-1. Navigate to the `backend/` folder.
-2. Create a virtual environment:
+2. **Build and run with Docker**:
+   ```bash
+   docker-compose up --build
+   ```
+
+   The application will be available at `http://localhost:8000`
+   - Frontend: `http://localhost:8000`
+   - API docs: `http://localhost:8000/docs`
+   - Health check: `http://localhost:8000/ping`
+
+### **Option 2: Development Mode (Separate Frontend/Backend)**
+
+Run frontend and backend separately for development:
+
+#### **Backend Setup**
+
+1. Create a virtual environment:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-3. Install dependencies:
+
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
+
+3. Set environment variable:
+   ```bash
+   # Create a .env file or export:
+   export GROQ_API_KEY=your_groq_api_key_here
+   ```
+
 4. Start the backend server:
    ```bash
    uvicorn main:app --reload
    ```
 
-#### **Docker**
-1. Build and run the application using Docker Compose:
+   The API will be available at `http://localhost:8000`
+   - API docs: `http://localhost:8000/docs`
+   - Health check: `http://localhost:8000/ping`
+
+#### **Frontend Setup**
+
+1. Navigate to the `frontend/` folder:
    ```bash
-   docker-compose up --build
+   cd frontend
    ```
 
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create `.env` file (optional, defaults to `http://localhost:8000`):
+   ```bash
+   echo "REACT_APP_API_URL=http://localhost:8000" > .env
+   ```
+
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+
+   The frontend will be available at `http://localhost:3000`
+
+### **Prerequisites**
+- Install **Python 3.9+**
+- Install **Node.js** and **npm** (for frontend development)
+- Install **Docker** and **Docker Compose** (for integrated deployment)
+- Get a **Groq API key** from https://console.groq.com
+
 ---
 
-## **Future Improvements**
-- Add the **Auth Module** for user authentication.
-- Add the **Analytics Module** for metrics and reporting.
-- Migrate the frontend to **Next.js** for better SEO and performance.
-- Integrate the **Groq API** into the Interview Module.
-- Connect the **Metrics Engine** to the Analytics Module.
+## **API Endpoints**
+
+### **Generate Interview Questions**
+```http
+POST /v1/interview/generate-questions
+Content-Type: application/json
+
+{
+  "role": "Software Engineer",
+  "experience": "2 years"
+}
+```
+
+**Response:**
+```json
+{
+  "questions": [
+    "What is the difference between a list and a tuple in Python?",
+    "Explain the concept of RESTful APIs.",
+    ...
+  ]
+}
+```
+
+### **Evaluate Answer**
+```http
+POST /v1/interview/evaluate
+Content-Type: application/json
+
+{
+  "question": "What is the difference between a list and a tuple?",
+  "answer": "A list is mutable while a tuple is immutable..."
+}
+```
+
+**Response:**
+```json
+{
+  "score": 8,
+  "strengths": ["Clear explanation", "Good examples"],
+  "weaknesses": ["Could mention performance implications"],
+  "improved_answer": "A list is mutable... [improved version]"
+}
+```
 
 ---
+
+## **Architecture**
+
+The backend follows **Clean Architecture** principles:
+
+- **Domain Layer**: Pure business logic (entities, domain rules)
+- **Application Layer**: Use cases that orchestrate domain logic
+- **Infrastructure Layer**: External services (Groq API)
+- **API Layer**: FastAPI routes and HTTP handling
+
+This structure ensures:
+- Business logic is independent of external services
+- Easy to test and maintain
+- Simple to add new features
+
+---
+
+## **Technology Stack**
+
+- **Backend**: FastAPI, Python 3.9+
+- **AI Service**: Groq API (Llama 3.1 8B Instant)
+- **Frontend**: React
+- **Validation**: Pydantic
+
+---
+
+## **Features**
+
+✅ **No Signup Required** - Open trial model  
+✅ **AI-Powered Questions** - Generate questions based on role and experience  
+✅ **Answer Evaluation** - Get scores, strengths, weaknesses, and improved answers  
+✅ **Clean Architecture** - Maintainable and scalable codebase  
+
+---
+
+## **Deployment**
+
+For step-by-step deployment instructions, see [DEPLOYMENT_STEPS.md](./DEPLOYMENT_STEPS.md).
+
+For detailed deployment guide, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+### **Quick Deploy**
+
+```bash
+# 1. Set environment variables
+export GROQ_API_KEY=your_key_here
+
+# 2. Build and run
+docker-compose up --build
+
+# 3. Access the app
+open http://localhost:8000
+```
+
+### **Environment Variables**
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GROQ_API_KEY` | Groq API key for AI services | Yes |
+| `CORS_ORIGINS` | Comma-separated allowed origins | No (has defaults) |
+| `APP_ENV` | Environment (development/production) | No |
+| `ENABLE_DOCS` | Enable API documentation | No (default: true) |
 
 ## **Contributing**
+
 We welcome contributions! Please follow these steps:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request with a detailed description of your changes.
+1. Fork the repository
+2. Create a new branch for your feature or bug fix
+3. Submit a pull request with a detailed description of your changes
 
 ---
 
 ## **Contact**
+
 If you have any questions, feel free to reach out to the project maintainers.
 
 Happy coding!

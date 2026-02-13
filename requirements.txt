@@ -1,11 +1,9 @@
 fastapi
 uvicorn[standard]
-SQLAlchemy
-alembic
-psycopg2-binary
+aiofiles
 pydantic
 pydantic-settings
 python-dotenv
-httpx
+groq
 pytest
 pytest-asyncio

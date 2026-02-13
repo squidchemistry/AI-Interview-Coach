@@ -17,14 +17,17 @@ class Settings(BaseSettings):
     (e.g. caching, messaging, feature flags).
     """
 
-    app_name: str = Field(default="Project Alpha Backend", alias="APP_NAME")
+    app_name: str = Field(default="AI Interview Coach", alias="APP_NAME")
     environment: Environment = Field(default="development", alias="APP_ENV")
     version: str = Field(default="0.1.0", alias="APP_VERSION")
     enable_docs: bool = Field(default=True, alias="ENABLE_DOCS")
-
-    database_url: str = Field(
-        default="postgresql+psycopg2://user:password@localhost:5432/project_alpha",
-        alias="DATABASE_URL",
+    
+    groq_api_key: str = Field(alias="GROQ_API_KEY")
+    
+    # CORS settings
+    cors_origins: str = Field(
+        default="http://localhost:3000,http://localhost:5173",
+        alias="CORS_ORIGINS"
     )
 
     class Config:

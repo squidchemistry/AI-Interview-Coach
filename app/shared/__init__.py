@@ -1,5 +1,5 @@
 """
-Shared cross-cutting utilities for the Project Alpha backend.
+Shared cross-cutting utilities for the AI Interview Coach backend.
 
 This package includes:
 - Base error types used across layers.
