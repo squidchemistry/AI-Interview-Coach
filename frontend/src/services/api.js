@@ -1,4 +1,7 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Use the same origin as the frontend in production, localhost in development
+const API_BASE_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' ? window.location.origin : 'http://localhost:8000');
+
 
 export const interviewAPI = {
   async generateQuestions(role, experience) {
