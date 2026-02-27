@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ai-interview-coach
+    env: docker
+    region: ohio
+    plan: free
+    branch: main
+    repo: https://github.com/squidchemistry/interviewcoach
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: APP_ENV
+        value: "production"
